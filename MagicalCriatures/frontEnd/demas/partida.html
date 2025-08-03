@@ -1,22 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magical Creatures</title>
+    <title>Magical Creatures - Partida</title>
     <link rel="icon" href="../img/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/partida.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-
     <div class="fondo">
-
         <div class="juego-container">
-
-            <h2 class="txt-ronda" id="txt-ronda">Ronda 1</h2>
+            <h2 class="txt-ronda" id="ronda-actual">Ronda 1</h2>
 
             <div class="jugadores" id="jugadores-container">
                 <!-- Jugadores se cargarán dinámicamente -->
@@ -26,155 +23,97 @@
                 <h3>Selecciona un poder</h3>
                 
                 <div class="poderes">
-                    <div class="poder">
+                    <div class="poder" data-poder="fuerza">
                         <p>Fuerza</p>
                         <img src="../img/fuerza.png" alt="Fuerza">
                     </div>
-                    <div class="poder">
+                    <div class="poder" data-poder="velocidad">
                         <p>Velocidad</p>
                         <img src="../img/velocidad.png" alt="Velocidad">
                     </div>
-                    <div class="poder">
+                    <div class="poder" data-poder="resistencia">
                         <p>Resistencia</p>
                         <img src="../img/resistencia.png" alt="Resistencia">
                     </div>
-                    <div class="poder">
+                    <div class="poder" data-poder="sigilo">
                         <p>Sigilo</p>
                         <img src="../img/sigilo.png" alt="Sigilo">
                     </div>
-                    <div class="poder">
+                    <div class="poder" data-poder="sabiduria">
                         <p>Sabiduría</p>
                         <img src="../img/sabiduria.png" alt="Sabiduría">
                     </div>
-                    <div class="poder">
+                    <div class="poder" data-poder="curacion">
                         <p>Curación</p>
                         <img src="../img/curacion.png" alt="Curación">
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const jugadoresSection = document.getElementById("jugadores-container");
-    const txtRonda = document.getElementById("txt-ronda");
-    const poderes = document.querySelectorAll(".poder");
-    
-    // Obtener jugadores de sessionStorage
-    const jugadores = JSON.parse(sessionStorage.getItem("jugadores")) || [];
-    const idSala = sessionStorage.getItem("idSala");
-    
-    if (!jugadores.length || !idSala) {
-        alert("Error: No se encontraron datos de la partida");
-        window.location.href = "sala.html";
-        return;
-    }
-    
-    // Estado del juego
-    let rondaActual = 1;
-    let jugadorActual = 0;
-    let cartasJugadores = {};
-    let puntosJugadores = {};
-    
-    // Inicializar juego
-    function inicializarJuego() {
-        jugadoresSection.innerHTML = "";
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Obtener parámetros de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const jugadores = [];
         
-        // Inicializar cartas y puntos
-        jugadores.forEach((nombre, index) => {
-            cartasJugadores[index] = 8;
-            puntosJugadores[index] = 0;
+        // Recoger todos los jugadores de los parámetros
+        for (let i = 1; i <= 5; i++) {
+            const nombreJugador = urlParams.get(`jugador${i}`);
+            const avatarJugador = urlParams.get(`avatar${i}`) || i; // Usar el avatar específico o el número por defecto
             
-            // Crear elemento de jugador
-            const jugadorDiv = document.createElement("div");
-            jugadorDiv.className = "jugador";
-            const avatarNum = (index % 6) + 1;
-            
-            jugadorDiv.innerHTML = `
-                <img src="../img/avatar${avatarNum}.png" alt="${nombre}">
-                <p>${nombre}</p>
-                <div>
-                    <div class="cartas"></div>
-                    <p class="num-cartas">${cartasJugadores[index]} Cartas</p>
-                </div>
-            `;
-            
-            jugadoresSection.appendChild(jugadorDiv);
-        });
-        
-        // Actualizar ronda
-        txtRonda.textContent = `Ronda ${rondaActual}`;
-    }
-    
-    // Manejar selección de poder
-    poderes.forEach(poder => {
-        poder.addEventListener("click", function() {
-            const atributo = this.querySelector("p").textContent.toLowerCase();
-            
-            try {
-                // Simular lógica del juego
-                const ganador = Math.floor(Math.random() * jugadores.length);
-                
-                // Actualizar cartas
-                cartasJugadores[ganador] += 1;
-                puntosJugadores[ganador] += 1;
-                cartasJugadores[jugadorActual] -= 1;
-                
-                // Actualizar vista
-                document.querySelectorAll(".num-cartas")[jugadorActual].textContent = 
-                    `${cartasJugadores[jugadorActual]} Cartas`;
-                document.querySelectorAll(".num-cartas")[ganador].textContent = 
-                    `${cartasJugadores[ganador]} Cartas`;
-                
-                // Pasar al siguiente jugador
-                jugadorActual = (jugadorActual + 1) % jugadores.length;
-                
-                // Si todos han jugado, siguiente ronda
-                if (jugadorActual === 0) {
-                    rondaActual++;
-                    txtRonda.textContent = `Ronda ${rondaActual}`;
-                }
-                
-                // Verificar fin del juego
-                const jugadoresConCartas = Object.values(cartasJugadores).filter(c => c > 0).length;
-                if (jugadoresConCartas <= 1) {
-                    finalizarJuego();
-                }
-            } catch (error) {
-                console.error("Error en la partida:", error);
-                alert("Ocurrió un error durante la partida");
-            }
-        });
-    });
-    
-    // Finalizar juego
-    async function finalizarJuego() {
-        let ganador = 0;
-        let maxPuntos = 0;
-        
-        for (let i = 0; i < jugadores.length; i++) {
-            if (puntosJugadores[i] > maxPuntos) {
-                maxPuntos = puntosJugadores[i];
-                ganador = i;
+            if (nombreJugador) {
+                jugadores.push({
+                    numero: i,
+                    nombre: nombreJugador,
+                    avatar: `../img/avatar${avatarJugador}.png`,
+                    cartas: 8, // Todos empiezan con 8 cartas
+                    puntos: 0  // Todos empiezan con 0 puntos
+                });
             }
         }
-        
-        alert(`¡El juego ha terminado! Ganador: ${jugadores[ganador]} con ${maxPuntos} puntos`);
-        
-        // Redirigir después de 3 segundos
-        setTimeout(() => {
-            window.location.href = "../index.html";
-        }, 3000);
-    }
-    
-    // Inicializar el juego
-    inicializarJuego();
-});
-</script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        // Mostrar jugadores en el contenedor
+        const jugadoresContainer = document.getElementById('jugadores-container');
+        
+        jugadores.forEach(jugador => {
+            const jugadorDiv = document.createElement('div');
+            jugadorDiv.className = 'jugador';
+            jugadorDiv.innerHTML = `
+                <p>${jugador.puntos} puntos</p>
+                <img src="${jugador.avatar}" alt="${jugador.nombre}" 
+                     onerror="this.src='../img/avatar-default.png'">
+                <p>${jugador.nombre}</p>
+                <div>
+                    <div class="cartas"></div>
+                    <p class="num-cartas">${jugador.cartas} Cartas</p>
+                </div>
+            `;
+            jugadoresContainer.appendChild(jugadorDiv);
+        });
+
+        // Manejar selección de poderes
+        const poderes = document.querySelectorAll('.poder');
+        poderes.forEach(poder => {
+            poder.addEventListener('click', function() {
+                const tipoPoder = this.getAttribute('data-poder');
+                console.log(`Poder seleccionado: ${tipoPoder}`);
+                
+                // Aquí puedes agregar la lógica para procesar el poder seleccionado
+                // Por ejemplo, enviar al servidor o actualizar el estado del juego
+                
+                // Ejemplo: Después de seleccionar, avanzar a la siguiente ronda
+                setTimeout(() => {
+                    const rondaActual = document.getElementById('ronda-actual');
+                    const numRonda = parseInt(rondaActual.textContent.match(/\d+/)[0]);
+                    rondaActual.textContent = `Ronda ${numRonda + 1}`;
+                }, 1000);
+            });
+        });
+    });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

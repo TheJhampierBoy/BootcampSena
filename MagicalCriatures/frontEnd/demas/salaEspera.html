@@ -34,22 +34,25 @@
 
     </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
+<script>document.addEventListener("DOMContentLoaded", function() {
     const jugadoresContainer = document.getElementById("jugadores-container");
     const btnIniciar = document.getElementById("btn-iniciar");
     const urlParams = new URLSearchParams(window.location.search);
     const idSala = urlParams.get('idSala');
     
-  
-    const jugadoresURL = [];
-    urlParams.forEach((value, key) => {
-        if (key.startsWith("jugador")) {
-            const num = parseInt(key.replace("jugador", ""));
-            jugadoresURL[num - 1] = value;
+    // Recoger jugadores y sus avatares
+    const jugadores = [];
+    for (let i = 1; i <= 5; i++) {
+        const nombre = urlParams.get(`jugador${i}`);
+        const avatar = urlParams.get(`avatar${i}`);
+        if (nombre) {
+            jugadores.push({
+                numero: i,
+                nombre: nombre,
+                avatar: avatar || ((i % 6) + 1) // Usar el guardado o calcular uno
+            });
         }
-    });
-    
+    }
     
     async function cargarJugadoresDesdeBD() {
         try {
@@ -62,46 +65,47 @@ document.addEventListener("DOMContentLoaded", function() {
             if (data.status === "success") {
                 mostrarJugadores(data.jugadores);
             } else {
-             
-                mostrarJugadores(jugadoresURL.filter(j => j !== undefined && j !== ""));
+                mostrarJugadores(jugadores);
             }
         } catch (error) {
             console.error("Error al cargar jugadores:", error);
-          
-            mostrarJugadores(jugadoresURL.filter(j => j !== undefined && j !== ""));
+            mostrarJugadores(jugadores);
         }
     }
     
     function mostrarJugadores(jugadores) {
         jugadoresContainer.innerHTML = "";
         
-        jugadores.forEach((nombre, index) => {
-            const avatarNum = (index % 6) + 1;
+        jugadores.forEach(jugador => {
             const jugadorDiv = document.createElement("div");
             jugadorDiv.className = "jugador";
             
             jugadorDiv.innerHTML = `
-                <img src="../img/avatar${avatarNum}.png" alt="${nombre}" />
-                <p>${nombre}</p>
+                <img src="../img/avatar${jugador.avatar}.png" alt="${jugador.nombre}" />
+                <p>${jugador.nombre}</p>
             `;
             
             jugadoresContainer.appendChild(jugadorDiv);
         });
     }
     
-   
     btnIniciar.addEventListener("click", function() {
         if (!idSala) {
             alert("Error: No se encontró ID de sala");
             return;
         }
         
+        // Pasar todos los parámetros a partida.html
+        const params = new URLSearchParams();
+        jugadores.forEach(jugador => {
+            params.append(`jugador${jugador.numero}`, jugador.nombre);
+            params.append(`avatar${jugador.numero}`, jugador.avatar);
+        });
+        params.append('idSala', idSala);
         
-        sessionStorage.setItem("idSala", idSala);
-        window.location.href = "partida.html";
+        window.location.href = `partida.html?${params.toString()}`;
     });
     
-   
     cargarJugadoresDesdeBD();
 });
 </script>
