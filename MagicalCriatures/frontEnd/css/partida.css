@@ -46,20 +46,39 @@ body {
     margin: 30px 0;
 }
 
+/* Estilos para los jugadores */
 .jugador {
-    background-color: rgba(58, 50, 26, 0.7);
+    /* Eliminamos el background-color */
     border-radius: 15px;
-    padding: 20px;
-    min-width: 180px;
+    padding: 15px;
+    margin: 10px;
+    width: 200px;
+    text-align: center;
     transition: all 0.3s;
-    position: relative;
 }
 
+/* Texto en blanco */
+.jugador p {
+    color: white !important;
+    margin: 5px 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Puntos en blanco */
+.jugador .puntos {
+    color: white !important;
+}
+
+/* Número de cartas en blanco */
+.jugador .num-cartas {
+    color: white !important;
+}
+
+/* Efecto hover más sutil */
 .jugador:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
 }
-
 .avatar-jugador {
     width: 100px;
     height: 100px;

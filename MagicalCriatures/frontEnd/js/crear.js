@@ -10,12 +10,12 @@ document.addEventListener("DOMContentLoaded", function() {
         div.className = "nombres";
         div.style.marginBottom = "10px";
         
-        const avatarNum = (i % 6) + 1; // Guardar este número para cada jugador
+        const avatarNum = (i % 6) + 1;
         const avatar = document.createElement("div");
         avatar.className = "avatar";
         avatar.style.backgroundImage = `url(../img/avatar${avatarNum}.png)`;
         avatar.style.margin = "0 auto";
-        avatar.dataset.avatar = avatarNum; // Almacenar el número de avatar
+        avatar.dataset.avatar = avatarNum;
         
         const input = document.createElement("input");
         input.type = "text";
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const jugadores = {};
         
         inputs.forEach((input, index) => {
-            const avatarNum = avatares[index].dataset.avatar; // Obtener el número de avatar guardado
+            const avatarNum = avatares[index].dataset.avatar;
             jugadores[`jugador${index+1}`] = {
                 nombre: input.value.trim(),
                 avatar: avatarNum
@@ -64,12 +64,21 @@ document.addEventListener("DOMContentLoaded", function() {
                 body: JSON.stringify(jugadores)
             });
             
+            // Verificar primero el tipo de contenido
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const errorText = await response.text();
+                throw new Error(`El servidor respondió con: ${errorText.substring(0, 100)}...`);
+            }
+            
+            // Si es JSON, proceder con el parsing
             const data = await response.json();
             
             if (!response.ok || data.status !== "success") {
                 throw new Error(data.message || `Error del servidor: ${response.status}`);
             }
             
+            // Construir URL con parámetros
             const params = new URLSearchParams();
             for (const [key, value] of Object.entries(jugadores)) {
                 params.append(key, value.nombre);
@@ -77,11 +86,28 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             params.append('idSala', data.idSala);
             
+            // Redirigir a sala de espera
             window.location.href = `salaEspera.html?${params.toString()}`;
             
         } catch (error) {
             console.error("Error completo:", error);
-            alert(`Error: ${error.message}\n\nRevisa la consola para más detalles`);
+            
+            // Mensaje de error más detallado
+            let errorMessage = `Error: ${error.message}`;
+            
+            if (error.message.includes("Failed to fetch")) {
+                errorMessage += "\n\nPosibles soluciones:";
+                errorMessage += "\n1. Verifica que el servidor local (XAMPP/WAMP) está corriendo";
+                errorMessage += "\n2. Comprueba que la URL del endpoint es correcta";
+                errorMessage += "\n3. Revisa la consola del navegador para más detalles";
+            } else if (error.message.includes("<br")) {
+                errorMessage += "\n\nEl servidor está devolviendo una página de error HTML";
+                errorMessage += "\n1. Revisa tu archivo bd.php";
+                errorMessage += "\n2. Verifica que no haya errores de PHP";
+                errorMessage += "\n3. Comprueba los logs del servidor";
+            }
+            
+            alert(errorMessage);
         } finally {
             btnRegistrar.disabled = false;
             btnRegistrar.textContent = "Registrar";

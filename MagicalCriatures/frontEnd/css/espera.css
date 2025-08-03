@@ -95,3 +95,11 @@ body {
 .registrar:hover {
     transform: scale(1.05);
 }
+
+.registrar-img {
+    width: 100px; /* Ajusta según necesites */
+    margin-top: 10px; /* Espacio entre el nombre y la imagen */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
