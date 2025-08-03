@@ -1,0 +1,80 @@
+.btn-volver {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: url('../img/btn-Volver.png') no-repeat center/cover;
+    color: white;
+    font-size: 24px;
+    border: none;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+}
+
+.letrero {
+    background: url(../img/cuadro.png) no-repeat center/contain;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+    font-size: 24px;
+    position: relative;
+    width: 35%;
+    height: 200px;
+    
+}
+
+.texto {
+    font-size: 35px;
+    font-family: 'Metal Mania';
+    letter-spacing: 2px;
+    margin-top: 115px;
+}
+
+.jugadores {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.btn-jugador {
+    background: url(../img/circulo.png) no-repeat center/cover;
+    color: white;
+    font-size: 40px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+    margin-top: 10%;
+    font-family: 'Metal Mania';
+}
+
+.btn-jugador:hover {
+    transform: scale(1.1);
+}
+
+.btn-jugador.selected {
+    background-color: #8a8a5a;
+    border: 2px solid #fff;
+}
+
+.crear {
+    background: url(../img/boton.png) no-repeat center/cover;
+    color: white;
+    font-size: 25px;
+    border: none;
+    width: 200px;
+    height: 70px;
+    border-radius: 10px;
+    font-family: 'Metal Mania';
+    cursor: pointer;
+    margin-top: 35px;
+    transition: transform 0.2s;
+}
+
+.crear:hover {
+    transform: scale(1.05);
+}
+

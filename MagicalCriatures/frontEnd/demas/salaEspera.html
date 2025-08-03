@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magical Creatures</title>
+    <link rel="icon" href="../img/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/espera.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="fondo">
+
+        <div>
+            <a href="./sala.html">
+                <button class="btn-volver"></button>
+            </a>
+        </div>
+
+        <div>
+            <h2 class="texto">Inicio de la Sala</h2>
+        </div>
+
+        <div class="jugadores-container" id="jugadores-container">
+           
+        </div>
+
+        <div>
+            <button id="btn-iniciar" class="registrar">Iniciar</button>
+        </div>
+
+    </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const jugadoresContainer = document.getElementById("jugadores-container");
+    const btnIniciar = document.getElementById("btn-iniciar");
+    const urlParams = new URLSearchParams(window.location.search);
+    const idSala = urlParams.get('idSala');
+    
+  
+    const jugadoresURL = [];
+    urlParams.forEach((value, key) => {
+        if (key.startsWith("jugador")) {
+            const num = parseInt(key.replace("jugador", ""));
+            jugadoresURL[num - 1] = value;
+        }
+    });
+    
+    
+    async function cargarJugadoresDesdeBD() {
+        try {
+            const response = await fetch(`../php/obtenerJugadores.php?idSala=${idSala}`);
+            if (!response.ok) {
+                throw new Error("Error al obtener jugadores");
+            }
+            const data = await response.json();
+            
+            if (data.status === "success") {
+                mostrarJugadores(data.jugadores);
+            } else {
+             
+                mostrarJugadores(jugadoresURL.filter(j => j !== undefined && j !== ""));
+            }
+        } catch (error) {
+            console.error("Error al cargar jugadores:", error);
+          
+            mostrarJugadores(jugadoresURL.filter(j => j !== undefined && j !== ""));
+        }
+    }
+    
+    function mostrarJugadores(jugadores) {
+        jugadoresContainer.innerHTML = "";
+        
+        jugadores.forEach((nombre, index) => {
+            const avatarNum = (index % 6) + 1;
+            const jugadorDiv = document.createElement("div");
+            jugadorDiv.className = "jugador";
+            
+            jugadorDiv.innerHTML = `
+                <img src="../img/avatar${avatarNum}.png" alt="${nombre}" />
+                <p>${nombre}</p>
+            `;
+            
+            jugadoresContainer.appendChild(jugadorDiv);
+        });
+    }
+    
+   
+    btnIniciar.addEventListener("click", function() {
+        if (!idSala) {
+            alert("Error: No se encontró ID de sala");
+            return;
+        }
+        
+        
+        sessionStorage.setItem("idSala", idSala);
+        window.location.href = "partida.html";
+    });
+    
+   
+    cargarJugadoresDesdeBD();
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

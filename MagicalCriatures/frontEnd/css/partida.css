@@ -1,0 +1,123 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+@font-face {
+    font-family: 'Metal Mania';
+    src: url('../tipografia/MetalMania-Regular.ttf');
+}
+
+.fondo {
+    position: relative;
+    width: 100%;
+    height: 850px;
+    background: url('../img/fondoSala.png') no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.juego-container {
+    padding: 20px;
+    text-align: center;
+}
+
+.btn-back {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: #3a321a;
+    color: white;
+    font-size: 24px;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    border: none;
+    cursor: pointer;
+}
+
+.txt-ronda {
+    margin-top: 10px;
+    font-size: 50px;
+    font-family: 'Metal Mania';
+    letter-spacing: 2px;
+    color: white;
+}
+
+.jugadores {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.jugador {
+    text-align: center;
+    font-family: 'Metal Mania';
+}
+
+.jugador img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+
+.jugador p {
+    color: white;
+    letter-spacing: 2px;
+}
+
+.cartas {
+    background: url('../img/minicarta.png') no-repeat center/contain;
+    width: 90px;
+    height: 80px;
+    margin-top: -15px;
+}
+
+.seleccion-container {
+    background: url('../img/cuPoder.png') no-repeat center/cover;
+    background-size: contain;
+    width: 1150px;
+    height: 455px;
+}
+
+.seleccion-container h3 {
+    font-size: 35px;
+    font-family: 'Metal Mania';
+    letter-spacing: 2px;
+    position: relative;
+    top: 20px;
+    color: white;
+}
+
+.poderes {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.poder {
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.poder:hover {
+    transform: scale(1.1);
+}
+
+.poder img {
+    width: 150px;
+    height: 200px;
+    border-radius: 10px;
+}
+
+.poder p {
+    margin-top: 30px;
+    color: white;
+    font-size: 28px;
+    font-family: 'Metal Mania';
+    letter-spacing: 2px;
+}
